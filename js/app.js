@@ -31,6 +31,12 @@ window.onload = () => {
         options.currentChoice = null;
 });
 
+    document.getElementById("skip").addEventListener("click", () => {
+        options.currentChoice = 0;
+        choiceCheck();
+        newStatement();
+});
+
 }
 
 function choiceCheck() {
@@ -52,15 +58,33 @@ function newStatement() {
 function getProsCons(i) {
     var parentPros = document.getElementById("pros");
     var parentCons = document.getElementById("cons");
+    var parentAmb = document.getElementById("amb");
     parentPros.innerHTML = "";
     parentCons.innerHTML = "";
+    parentAmb.innerHTML = "";
     for (var k = 0; k < subjects[i].parties.length; k++) {
-        var child = "<p>" + subjects[i].parties[k].name + "</p>";
-        console.log(subjects[i].parties[k].name)
+        var child = document.createElement("p");
+        var secondChild = document.createElement("p");
+        var div = document.createElement("div");
+        child.addEventListener("click", (event) => {
+            var pew = event.srcElement.parentElement.children[1];
+            if (pew.style.display === "none") {
+                pew.style.display = "";
+            } else {
+                pew.style.display = "none";
+            }
+        });
+        secondChild.innerHTML = subjects[i].parties[k].explanation;
+        secondChild.style.display = "none";
+        child.innerHTML = subjects[i].parties[k].name;
+        div.appendChild(child);
+        div.appendChild(secondChild);
         if (subjects[i].parties[k].position === "pro") {
-            parentPros.innerHTML += child
+            parentPros.appendChild(div);
+        } else if (subjects[i].parties[k].position === "contra") {
+            parentCons.appendChild(div);
         } else {
-            parentCons.innerHTML += child
+            parentAmb.appendChild(div);
         }
     }
 }
