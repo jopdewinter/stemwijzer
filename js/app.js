@@ -5,38 +5,72 @@ var options = {
     currentChoice: null
 }
 var i = 0;
+var j = [];
 
 window.onload = () => {
     console.log(subjects)
-    newStatement()
+    newStatement();
 
     document.getElementById("agreed").addEventListener("click", () => {
         options.currentChoice = 0;
         options.agreed++
-});
+        for (var k = 0; k < subjects[i].parties.length; k++) {
+            var position = subjects[i].parties[k].name;
+            if (subjects[i].parties[k].position === "pro") {
+                j.push(position)
+            }
+        }
+    });
 
     document.getElementById("disagreed").addEventListener("click", () => {
         options.currentChoice = 0;
         options.disagreed++
-});
+        for (var k = 0; k < subjects[i].parties.length; k++) {
+            var position = subjects[i].parties[k].name;
+            if (subjects[i].parties[k].position === "contra") {
+                j.push(position)
+            }
+        }
+    });
 
     document.getElementById("neither").addEventListener("click", () => {
         options.currentChoice = 0;
         options.neither++
-});
+        for (var k = 0; k < subjects[i].parties.length; k++) {
+            var position = subjects[i].parties[k].name;
+            if (subjects[i].parties[k].position === "ambivalent") {
+                j.push(position)
+            }
+        }
+    });
 
     document.getElementById("next").addEventListener("click", () => {
         choiceCheck();
         newStatement();
         options.currentChoice = null;
-});
+    });
 
     document.getElementById("skip").addEventListener("click", () => {
         options.currentChoice = 0;
         choiceCheck();
         newStatement();
-});
+    });
 
+    document.getElementById("resultButton").addEventListener("click", () => {
+        document.getElementById("bodyDiv").innerHTML = "";
+        var name = "";
+        var result = "";
+        var resultArray = [];
+        for (var k = 0; k < subjects[i-1].parties.length; k++) {
+            name = subjects[i-1].parties[k].name;
+            result = j.filter(item => item == name).length;
+            resultArray.push(result + " " + name)
+        }
+        var parent = document.getElementById("result")
+        var child = document.createElement("p");
+        child.innerHTML = resultArray.sort().reverse();
+        parent.appendChild(child);
+    });
 }
 
 function choiceCheck() {
@@ -52,6 +86,9 @@ function newStatement() {
         document.getElementById("title").innerText = subjects[i].title;
         document.getElementById("statement").innerText = subjects[i].statement;
         getProsCons(i)
+    }
+    if (i === 3) {
+        document.getElementById("resultButton").style.display = "";
     }
 }
 
