@@ -6,10 +6,22 @@ var options = {
 }
 var i = 0;
 var j = [];
+var q = 0;
 
 window.onload = () => {
     console.log(subjects)
+    console.log(parties)
     newStatement();
+
+    document.getElementById("back").addEventListener("click", () => {
+        options.currentChoice = 0;
+        q++;
+        if (i === 0) {
+            document.getElementById("back").style.display = "none";
+        }
+        i = i - 1;
+        newStatement()
+    });
 
     document.getElementById("agreed").addEventListener("click", () => {
         options.currentChoice = 0;
@@ -48,6 +60,7 @@ window.onload = () => {
         choiceCheck();
         newStatement();
         options.currentChoice = null;
+        document.getElementById("back").style.display = "";
     });
 
     document.getElementById("skip").addEventListener("click", () => {
@@ -58,18 +71,26 @@ window.onload = () => {
 
     document.getElementById("resultButton").addEventListener("click", () => {
         document.getElementById("bodyDiv").innerHTML = "";
+        document.getElementById("filterParties").style.display = "";
+        document.getElementById("filterSeculier").style.display = "";
         var name = "";
         var result = "";
         var resultArray = [];
         for (var k = 0; k < subjects[i-1].parties.length; k++) {
             name = subjects[i-1].parties[k].name;
             result = j.filter(item => item == name).length;
+            result = result - q;
             resultArray.push(result + " " + name)
         }
         var parent = document.getElementById("result")
+        var secondParent = document.createElement("div")
         var child = document.createElement("p");
-        child.innerHTML = resultArray.sort().reverse();
-        parent.appendChild(child);
+        resultArray = resultArray.sort().reverse();
+        for (var p = 0; p < resultArray.length ; p++) {
+            child.innerHTML = resultArray[p];
+            secondParent.appendChild(child);
+        }
+        parent.appendChild(secondParent);
     });
 }
 
@@ -83,6 +104,7 @@ function choiceCheck() {
 
 function newStatement() {
     if (i < 3) {
+        console.log(i)
         document.getElementById("title").innerText = subjects[i].title;
         document.getElementById("statement").innerText = subjects[i].statement;
         getProsCons(i)
@@ -122,6 +144,22 @@ function getProsCons(i) {
             parentCons.appendChild(div);
         } else {
             parentAmb.appendChild(div);
+        }
+    }
+}
+
+function filterParties() {
+    for (var k = 0; k < parties; k++) {
+        if (parties[k].size <= 14) {
+
+        }
+    }
+}
+
+function filterSeculier() {
+    for (var k = 0; k < parties; k++) {
+        if (parties[k].secular != true) {
+
         }
     }
 }
