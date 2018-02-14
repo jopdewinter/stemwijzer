@@ -9,8 +9,6 @@ var j = [];
 var q = 0;
 
 window.onload = () => {
-    console.log(subjects)
-    console.log(parties)
     newStatement();
 
     document.getElementById("back").addEventListener("click", () => {
@@ -69,29 +67,57 @@ window.onload = () => {
         newStatement();
     });
 
-    document.getElementById("resultButton").addEventListener("click", () => {
-        document.getElementById("bodyDiv").innerHTML = "";
-        document.getElementById("filterParties").style.display = "";
-        document.getElementById("filterSeculier").style.display = "";
-        var name = "";
-        var result = "";
-        var resultArray = [];
+    document.getElementById("resultButton").addEventListener("click", () => {getResult()});
+    document.getElementById("filterParties").addEventListener("click", () => {getResult(true, false)});
+    document.getElementById("filterSeculier").addEventListener("click", () => {getResult(false, true)});
+}
+
+function getResult(partieSize, secularOnly) {
+    document.getElementById("bodyDiv").innerHTML = "";
+    document.getElementById("filterParties").style.display = "";
+    document.getElementById("filterSeculier").style.display = "";
+    var name = "";
+    var result = "";
+    var resultArray = [];
+    if (partieSize) {
+        document.getElementById("result").innerHTML = "";
+        for (var k = 0; k < parties.length; k++) {
+            if (parties[k].size >= 14) {
+                name = parties[k].name;
+                result = j.filter(item => item == name).length;
+                result = result - q;
+                resultArray.push(result + " " + name)
+            }
+        }
+    }
+    if (secularOnly) {
+        document.getElementById("result").innerHTML = "";
+        for (var k = 0; k < parties.length; k++) {
+            if (parties[k].secular == true) {
+                name = subjects[i - 1].parties[k].name;
+                result = j.filter(item => item == name).length;
+                result = result - q;
+                resultArray.push(result + " " + name)
+            }
+        }
+    }
+    if (partieSize === undefined || secularOnly === undefined) {
         for (var k = 0; k < subjects[i-1].parties.length; k++) {
             name = subjects[i-1].parties[k].name;
             result = j.filter(item => item == name).length;
             result = result - q;
             resultArray.push(result + " " + name)
         }
-        var parent = document.getElementById("result")
-        var secondParent = document.createElement("div")
+    }
+    var parent = document.getElementById("result")
+    var secondParent = document.createElement("div")
+    resultArray = resultArray.sort().reverse();
+    for (var p = 0; p < resultArray.length ; p++) {
         var child = document.createElement("p");
-        resultArray = resultArray.sort().reverse();
-        for (var p = 0; p < resultArray.length ; p++) {
-            child.innerHTML = resultArray[p];
-            secondParent.appendChild(child);
-        }
-        parent.appendChild(secondParent);
-    });
+        child.innerHTML = resultArray[p];
+        secondParent.appendChild(child);
+    }
+    parent.appendChild(secondParent);
 }
 
 function choiceCheck() {
@@ -104,7 +130,6 @@ function choiceCheck() {
 
 function newStatement() {
     if (i < 3) {
-        console.log(i)
         document.getElementById("title").innerText = subjects[i].title;
         document.getElementById("statement").innerText = subjects[i].statement;
         getProsCons(i)
@@ -144,22 +169,6 @@ function getProsCons(i) {
             parentCons.appendChild(div);
         } else {
             parentAmb.appendChild(div);
-        }
-    }
-}
-
-function filterParties() {
-    for (var k = 0; k < parties; k++) {
-        if (parties[k].size <= 14) {
-
-        }
-    }
-}
-
-function filterSeculier() {
-    for (var k = 0; k < parties; k++) {
-        if (parties[k].secular != true) {
-
         }
     }
 }
